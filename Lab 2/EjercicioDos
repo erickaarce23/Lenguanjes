@@ -1,0 +1,9 @@
+
+let generar_sec a b =
+    if a > b then
+        []
+    else
+        [a..b]//gemera una secuencia de numeros enrre a y b 
+
+let secuencia = generar_sec 0 6
+printfn "%A" secuencia 
