@@ -1,0 +1,78 @@
+module Main
+
+type Producto = {
+    nombre: string
+    descripcion: string
+    montoVenta: int32
+}
+
+type Productos = Producto list
+
+let mutable factura = []
+
+let rangoPagoImpuestos = 20000
+let porcentajeImpuesto = 0.13
+
+let agregarProducto (nom: string) (desc: string) (pre: int32) =
+    let idx = factura |> List.tryFindIndex (fun p -> p.nombre = nom)
+    match idx with
+    | None ->
+        factura <- factura @ [ {nombre = nom; descripcion = desc; montoVenta = pre} ]
+    | Some _ ->
+        printfn "cant add existing product to the list"
+
+let calcularImpuestoFactura () =
+    let lista =
+        factura
+        |> List.filter (fun p -> p.montoVenta > rangoPagoImpuestos)
+    let lista2 =
+        lista
+        |> List.map (fun p -> int32(float p.montoVenta * porcentajeImpuesto))
+    lista2 |> List.sum
+
+let calcularMontoFactura () =
+    factura
+    |> List.map (fun p -> p.montoVenta)
+    |> List.sum
+
+// Construir la versión con tipos genéricos de las tres funciones anteriores map/filter para que acepten slices y funciones de cualquier otro tipo
+
+let map1 (list: 'a list) (f: 'a -> 'b) : 'b list =
+    list |> List.map f
+
+let filter1 (list: 'a list) (f: 'a -> bool) : 'a list =
+    list |> List.filter f
+
+let reduce (list: 'a list) (f: 'a -> 'a -> 'a) : 'a =
+    list |> List.reduce f
+
+// Probar su funcionamiento creando una lista/slice de personas y filtrando aquellas personas que sean mayores de edad
+
+type Persona = {
+    nombre: string
+    edad: int
+}
+
+let personas = [
+    {nombre = "Juan"; edad = 20}
+    {nombre = "Pedro"; edad = 30}
+    {nombre = "María"; edad = 15}
+    {nombre = "Ana"; edad = 25}
+]
+
+let mayoresDeEdad =
+    personas
+    |> List.filter (fun p -> p.edad >= 18)
+
+[<EntryPoint>]
+let main argv =
+    agregarProducto "tarjeta madre" "Asus" 54200
+    agregarProducto "mouse" "alámbrico" 15000
+    agregarProducto "teclado" "gamer con luces" 30000
+    agregarProducto "memoria ssd" "2 gb" 65000
+    agregarProducto "cable video" "display port 1m" 18000
+
+    printfn "%d" (calcularMontoFactura())
+    printfn "%d" (calcularImpuestoFactura())
+
+    0 // return an integer exit code
