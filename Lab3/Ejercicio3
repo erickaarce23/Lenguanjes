@@ -1,0 +1,12 @@
+([], []).
+aplanar_aux([X|Xs], Ys) :-
+    is_list(X), % Si X es una lista, aplanamos su contenido recursivamente
+    aplanar_aux(X, XFlat),
+    aplanar_aux(Xs, YsFlat),
+    append(XFlat, YsFlat, Ys).
+aplanar_aux([X|Xs], [X|Ys]) :-
+    not(is_list(X)), % Si X no es una lista, lo agregamos a la lista resultante
+    aplanar_aux(Xs, Ys).
+
+aplanar(X, Y) :-
+    aplanar_aux(X, Y).
