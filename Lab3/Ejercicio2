@@ -1,0 +1,10 @@
+es_subconjunto([], _).
+es_subconjunto([X|Xs], Ys) :-
+  member(X, Ys),
+  es_subconjunto(Xs, Ys).
+
+sub_conjunto(X, Y) :-
+  es_subconjunto(X, Y),
+  length(X, LenX),
+  length(Y, LenY),
+  LenX =< LenY.
